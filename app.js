@@ -5,13 +5,21 @@ function Application(){
     this.run = function(){
 
         console.log('Pong game is up and running...');
+
+        init();
     }
 
     function init(){
 
         const canvas = document.getElementById('application');
 
-        const pong = new Pong();
+        const options = {};
+
+        const pong = new Pong(canvas,options);
+
+        pong.start();
+
+        window.ondblclick = () => pong.setScreenSize('FULL');
     }
 }
 

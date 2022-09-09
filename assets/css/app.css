@@ -6,6 +6,20 @@
 
 html,body{
 
+    height: 100%;
+}
+
+#app{
+
+    height: inherit;
+}
+
+.wrapper{
+
+    height: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 canvas{
