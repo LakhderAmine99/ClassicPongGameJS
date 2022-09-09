@@ -1,4 +1,6 @@
 import Rectangle from "./pong/shape/rectangle.js";
+import { Keyboard,keyCodes } from "./pong/keyboard/keyboard.js";
+import { Utils } from "./utils/index.js";
 
 class Pong {
 
@@ -18,6 +20,11 @@ class Pong {
     #sprites = [];
 
     /**
+     * @type {Keyboard} #keyboard
+     */
+    #keyboard = null;
+
+    /**
      * 
      * @param {HTMLCanvasElement} canvas 
      * @param {{}} options 
@@ -26,6 +33,8 @@ class Pong {
 
         this.#canvas = canvas;
         this.#options = options;
+
+        this.#keyboard = new Keyboard();
 
         this.#init();
     }
@@ -68,6 +77,8 @@ class Pong {
                 color: 'lightgreen'
             }
         ));
+
+        this.#handleEvents();
     }
 
     /**
@@ -106,6 +117,31 @@ class Pong {
      */
     #handleEvents(){
 
+        this.#keyboard.handle('keydown',(e) => {
+
+            if(e.keyCode == keyCodes.UP){
+
+                Utils.Directions.MOVE_UP = true;
+            }
+
+            if(e.keyCode == keyCodes.DOWN){
+
+                Utils.Directions.MOVE_DOWN = true;
+            }
+        });
+
+        this.#keyboard.handle('keyup',(e) => {
+
+            if(e.keyCode == keyCodes.UP){
+
+                Utils.Directions.MOVE_UP = false;
+            }
+
+            if(e.keyCode == keyCodes.DOWN){
+
+                Utils.Directions.MOVE_DOWN = false;
+            }
+        });
     }
 
     /**
@@ -113,6 +149,18 @@ class Pong {
      */
     #update(){
 
+        window.requestAnimationFrame(() => this.#update(),() => this.#canvas);
+
+        if(Utils.Directions.MOVE_UP && !Utils.Directions.MOVE_DOWN){
+    
+            this.#sprites[0].y -= 4;
+        }
+            
+        if(Utils.Directions.MOVE_DOWN && !Utils.Directions.MOVE_UP){
+    
+            this.#sprites[0].y += 4;
+        }
+    
         this.#render();
     }
 
@@ -120,6 +168,8 @@ class Pong {
      * @private
      */
     #render(){
+
+        this.#drawingContext.clearRect(0,0,this.#canvas.width,this.#canvas.height);
 
         this.#sprites.forEach(sprite => {
 
