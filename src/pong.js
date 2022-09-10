@@ -25,12 +25,22 @@ class Pong {
      */
     #keyboard = null;
 
+    /**
+     * @type {CanvasRenderingContext2D} #drawingContext
+     */
+    #drawingContext = null;
+
     scorePanel = document.querySelector('.score-panel');
 
     playerScore = 0;
     opponentScore = 0;
     playerScoreElement = document.querySelector('.player');
     opponentScoreElement = document.querySelector('.opponent');
+
+    elapsedTime = performance.now();
+    previewsLoop = performance.now();
+
+    frameDuration = 1000/60;
 
     /**
      * 
@@ -41,6 +51,8 @@ class Pong {
 
         this.#canvas = canvas;
         this.#options = options;
+
+        this.#drawingContext = this.#canvas.getContext('2d');
 
         this.#keyboard = new Keyboard();
 
@@ -60,8 +72,8 @@ class Pong {
             {
                 width: 15,
                 height: 100,
-                speedX: 8,
-                speedY: 8,
+                speedX: 10,
+                speedY: 10,
                 color: 'white'
             }
         ));
@@ -73,8 +85,8 @@ class Pong {
             {
                 width: 15,
                 height: 100,
-                speedX: 6,
-                speedY: 6,
+                speedX: 8,
+                speedY: 8,
                 color: 'white'
             }
         ));
@@ -104,7 +116,6 @@ class Pong {
         if(value === 'FULL'){
 
             this.#canvas.requestFullscreen();
-
         }
 
         if(value === 'MEDIUM'){
@@ -164,65 +175,72 @@ class Pong {
      */
     #update(){
 
-        window.requestAnimationFrame(() => this.#update(),() => this.#canvas);
+        window.requestAnimationFrame(() => this.#update());
 
-        if(Utils.Directions.MOVE_UP && !Utils.Directions.MOVE_DOWN){
-    
-            this.#sprites[0].y = Math.max(20,this.#sprites[0].y - this.#sprites[0].speedY);
-        }
-            
-        if(Utils.Directions.MOVE_DOWN && !Utils.Directions.MOVE_UP){
-    
-            this.#sprites[0].y = Math.min(this.#sprites[0].y + this.#sprites[0].speedY,this.#canvas.height - this.#sprites[0].height - 20);
-        }
+        this.elapsedTime += performance.now() - this.previewsLoop;
+        this.previewsLoop = performance.now();
 
-        this.#sprites[2].x += this.#sprites[2].speedX;
-        this.#sprites[2].y += this.#sprites[2].speedY;
+        if(this.elapsedTime >= this.frameDuration){
 
-        if(this.#sprites[2].speedY < 0){
-
-            this.#sprites[1].y = Math.max(20,((this.#sprites[2].y + this.#sprites[1].height/2)*0.75 + Math.random()) | 0);
-
-        }else{
-
-            this.#sprites[1].y = Math.min(((this.#sprites[2].y + this.#sprites[1].height/2)*0.75 + Math.random()) | 0,this.#canvas.height - this.#sprites[0].height - 20);
-        }
+            if(Utils.Directions.MOVE_UP && !Utils.Directions.MOVE_DOWN){
         
-        if(this.#sprites[2].bottom >= this.#canvas.height){
-
-            this.#sprites[2].speedY = -6;
-        }
-
-        if(this.#sprites[2].y <= 0){
-
-            this.#sprites[2].speedY = 6;
-        }
-
-        if(this.#sprites[2].x <= 0){
-
-            this.opponentScore += 1;
-            this.opponentScoreElement.innerHTML = this.opponentScore;
-            this.#sprites[2].x = this.#canvas.width/2 | 0;
-        }
+                this.#sprites[0].y = Math.max(20,this.#sprites[0].y - this.#sprites[0].speedY);
+            }
+                
+            if(Utils.Directions.MOVE_DOWN && !Utils.Directions.MOVE_UP){
         
-        if(this.#sprites[2].x > this.#canvas.width){
+                this.#sprites[0].y = Math.min(this.#sprites[0].y + this.#sprites[0].speedY,this.#canvas.height - this.#sprites[0].height - 20);
+            }
+
+            this.#sprites[2].x += this.#sprites[2].speedX;
+            this.#sprites[2].y += this.#sprites[2].speedY;
+
+            if(this.#sprites[2].speedY < 0){
+
+                this.#sprites[1].y = Math.max(20,((this.#sprites[2].y + this.#sprites[1].height/2)*0.75 + Math.random()) | 0);
+
+            }else{
+
+                this.#sprites[1].y = Math.min(((this.#sprites[2].y + this.#sprites[1].height/2)*0.75 + Math.random()) | 0,this.#canvas.height - this.#sprites[0].height - 20);
+            }
             
-            this.playerScore += 1;
-            this.playerScoreElement.innerHTML = this.playerScore;
-            this.#sprites[2].x = this.#canvas.width/2 | 0;
+            if(this.#sprites[2].bottom >= this.#canvas.height){
+
+                this.#sprites[2].speedY = -6;
+            }
+
+            if(this.#sprites[2].y <= 0){
+
+                this.#sprites[2].speedY = 6;
+            }
+
+            if(this.#sprites[2].x <= 0){
+
+                this.opponentScore += 1;
+                this.opponentScoreElement.innerHTML = this.opponentScore;
+                this.#sprites[2].x = this.#canvas.width/2 | 0;
+            }
+            
+            if(this.#sprites[2].x > this.#canvas.width){
+                
+                this.playerScore += 1;
+                this.playerScoreElement.innerHTML = this.playerScore;
+                this.#sprites[2].x = this.#canvas.width/2 | 0;
+            }
+
+            if(Collision.hitBox(this.#sprites[0],this.#sprites[2])){
+
+                this.#sprites[2].speedX = 6;
+            }
+
+            if(Collision.hitBox(this.#sprites[1],this.#sprites[2])){
+
+                this.#sprites[2].speedX = -6;
+            }
+
+            this.elapsedTime -= this.frameDuration;
+            this.#render();
         }
-
-        if(Collision.hitBox(this.#sprites[0],this.#sprites[2])){
-
-            this.#sprites[2].speedX = 6;
-        }
-
-        if(Collision.hitBox(this.#sprites[1],this.#sprites[2])){
-
-            this.#sprites[2].speedX = -6;
-        }
-    
-        this.#render();
     }
 
     /**
@@ -237,8 +255,6 @@ class Pong {
             sprite.draw(this.#drawingContext);
         });
     }
-
-    get #drawingContext(){ return this.#canvas.getContext('2d'); }
 }
 
 export default Pong;

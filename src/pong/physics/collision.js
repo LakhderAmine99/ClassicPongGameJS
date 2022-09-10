@@ -1,11 +1,4 @@
-import Shape from '../shape/shape.js';
 import Rectangle from '../shape/rectangle.js';
-
-const CollisionStrategies = {
-
-    BOX:0,
-    CIRCLE:1
-};
 
 class Collision {
 
@@ -44,12 +37,6 @@ class Collision {
 
         return hit;
     }
-
-    hitCircle(spriteObjects){
-
-    }
-
-    get CS(){ return CollisionStrategies; }
 }
 
 export default new Collision();
