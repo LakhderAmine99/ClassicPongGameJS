@@ -1,5 +1,4 @@
 export const keyCodes = {
-
     UP:38,
     DOWN:40
 };
