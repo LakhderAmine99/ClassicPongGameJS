@@ -24,11 +24,7 @@ class Rectangle extends Shape {
 
         context.fillStyle = this.options.color;
 
-        context.moveTo(this.x,this.y);
-        context.lineTo(this.x + this.options.width,this.y);
-        context.lineTo(this.x + this.options.width,this.y + this.options.height);
-        context.lineTo(this.x,this.y + this.options.height);
-        context.lineTo(this.x,this.y);
+        context.rect(this.x,this.y,this.options.width,this.options.height);
 
         context.fill();
     }
@@ -58,12 +54,19 @@ class Rectangle extends Shape {
      */
     get halfWidth(){ return (this.width/2) | 0; }
 
-     /**
-      * @returns {number}
-      */
+    /**
+     * @returns {number}
+     */
     get halfHeight(){ return (this.height/2) | 0; }
 
+    /**
+     * @returns {number}
+     */
     get right(){ return this.x + this.width; }
+
+    /**
+     * @returns {number}
+     */
     get bottom(){ return this.y + this.height; }
 }
 
