@@ -72,8 +72,8 @@ class Pong {
             {
                 width: 15,
                 height: 100,
-                speedX: 10,
-                speedY: 10,
+                speedX: 6,
+                speedY: 6,
                 color: 'white'
             }
         ));
@@ -100,7 +100,7 @@ class Pong {
                 height: 20,
                 speedX: 6,
                 speedY: 6,
-                color: 'lightgreen'
+                color: 'red'
             }
         ));
 
@@ -197,11 +197,11 @@ class Pong {
 
             if(this.#sprites[2].speedY < 0){
 
-                this.#sprites[1].y = Math.max(20,((this.#sprites[2].y + this.#sprites[1].height/2)*0.75 + Math.random()) | 0);
+                this.#sprites[1].y = Math.max(0,((this.#sprites[2].y + this.#sprites[2].height/2 + this.#sprites[1].height/2)*0.75 + Math.random()) | 0);
 
             }else{
 
-                this.#sprites[1].y = Math.min(((this.#sprites[2].y + this.#sprites[1].height/2)*0.75 + Math.random()) | 0,this.#canvas.height - this.#sprites[0].height - 20);
+                this.#sprites[1].y = Math.min(((this.#sprites[2].y + this.#sprites[1].height/2)*0.75 + Math.random()) | 0,this.#canvas.height - this.#sprites[0].height);
             }
             
             if(this.#sprites[2].bottom >= this.#canvas.height){
@@ -230,12 +230,14 @@ class Pong {
 
             if(Collision.hitBox(this.#sprites[0],this.#sprites[2])){
 
-                this.#sprites[2].speedX = 6;
+                this.#sprites[2].speedX = 4+Math.random()*8 | 0;
+                this.#sprites[2].speedY = 1+Math.random()*6 | 0;
             }
 
             if(Collision.hitBox(this.#sprites[1],this.#sprites[2])){
 
-                this.#sprites[2].speedX = -6;
+                this.#sprites[2].speedX = -(4+Math.random()*8 | 0);
+                this.#sprites[2].speedY = -(1+Math.random()*6 | 0);
             }
 
             this.elapsedTime -= this.frameDuration;
