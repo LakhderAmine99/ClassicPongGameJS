@@ -14,14 +14,40 @@ html,body{
     height: inherit;
 }
 
+.flex{
+    display: flex;
+}
+
+.just-sp-between{
+
+    justify-content: space-between;
+}
+
 .wrapper{
 
+    position: relative;
     height: inherit;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 }
 
 canvas{
     background-color: black;
+}
+
+.score-panel{
+   
+    font-family: monospace;
+    position: absolute;
+    background-color: transparent;
+    font-size: 100px;
+    color: rgba(255, 255, 255, 0.43);
+    width: 25%;
+    top: 15%;
+}
+
+.score{
+
 }

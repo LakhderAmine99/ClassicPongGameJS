@@ -1,4 +1,5 @@
 import Rectangle from "./pong/shape/rectangle.js";
+import Collision from "./pong/physics/collision.js";
 import { Keyboard,keyCodes } from "./pong/keyboard/keyboard.js";
 import { Utils } from "./utils/index.js";
 
@@ -23,6 +24,13 @@ class Pong {
      * @type {Keyboard} #keyboard
      */
     #keyboard = null;
+
+    scorePanel = document.querySelector('.score-panel');
+
+    playerScore = 0;
+    opponentScore = 0;
+    playerScoreElement = document.querySelector('.player');
+    opponentScoreElement = document.querySelector('.opponent');
 
     /**
      * 
@@ -50,8 +58,10 @@ class Pong {
             20,
             ((this.#canvas.height/2) - 100/2) | 0,
             {
-                width: 20,
+                width: 15,
                 height: 100,
+                speedX: 8,
+                speedY: 8,
                 color: 'white'
             }
         ));
@@ -61,8 +71,10 @@ class Pong {
             this.#canvas.width - 20 - 20,
             ((this.#canvas.height/2) - 100/2) | 0,
             {
-                width: 20,
+                width: 15,
                 height: 100,
+                speedX: 6,
+                speedY: 6,
                 color: 'white'
             }
         ));
@@ -74,6 +86,8 @@ class Pong {
             {
                 width: 20,
                 height: 20,
+                speedX: 6,
+                speedY: 6,
                 color: 'lightgreen'
             }
         ));
@@ -90,6 +104,7 @@ class Pong {
         if(value === 'FULL'){
 
             this.#canvas.requestFullscreen();
+
         }
 
         if(value === 'MEDIUM'){
@@ -153,12 +168,58 @@ class Pong {
 
         if(Utils.Directions.MOVE_UP && !Utils.Directions.MOVE_DOWN){
     
-            this.#sprites[0].y -= 4;
+            this.#sprites[0].y = Math.max(20,this.#sprites[0].y - this.#sprites[0].speedY);
         }
             
         if(Utils.Directions.MOVE_DOWN && !Utils.Directions.MOVE_UP){
     
-            this.#sprites[0].y += 4;
+            this.#sprites[0].y = Math.min(this.#sprites[0].y + this.#sprites[0].speedY,this.#canvas.height - this.#sprites[0].height - 20);
+        }
+
+        this.#sprites[2].x += this.#sprites[2].speedX;
+        this.#sprites[2].y += this.#sprites[2].speedY;
+
+        if(this.#sprites[2].speedY < 0){
+
+            this.#sprites[1].y = Math.max(20,((this.#sprites[2].y + this.#sprites[1].height/2)*0.75 + Math.random()) | 0);
+
+        }else{
+
+            this.#sprites[1].y = Math.min(((this.#sprites[2].y + this.#sprites[1].height/2)*0.75 + Math.random()) | 0,this.#canvas.height - this.#sprites[0].height - 20);
+        }
+        
+        if(this.#sprites[2].bottom >= this.#canvas.height){
+
+            this.#sprites[2].speedY = -6;
+        }
+
+        if(this.#sprites[2].y <= 0){
+
+            this.#sprites[2].speedY = 6;
+        }
+
+        if(this.#sprites[2].x <= 0){
+
+            this.opponentScore += 1;
+            this.opponentScoreElement.innerHTML = this.opponentScore;
+            this.#sprites[2].x = this.#canvas.width/2 | 0;
+        }
+        
+        if(this.#sprites[2].x > this.#canvas.width){
+            
+            this.playerScore += 1;
+            this.playerScoreElement.innerHTML = this.playerScore;
+            this.#sprites[2].x = this.#canvas.width/2 | 0;
+        }
+
+        if(Collision.hitBox(this.#sprites[0],this.#sprites[2])){
+
+            this.#sprites[2].speedX = 6;
+        }
+
+        if(Collision.hitBox(this.#sprites[1],this.#sprites[2])){
+
+            this.#sprites[2].speedX = -6;
         }
     
         this.#render();

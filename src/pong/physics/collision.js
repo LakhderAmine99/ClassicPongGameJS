@@ -1,3 +1,6 @@
+import Shape from '../shape/shape.js';
+import Rectangle from '../shape/rectangle.js';
+
 const CollisionStrategies = {
 
     BOX:0,
@@ -8,31 +11,45 @@ class Collision {
 
     constructor(){}
 
-    add(strategy,...spriteObject){
+    /**
+     * 
+     * @param {...Rectangle} spriteObjects 
+     * @returns {Boolean} True if the sprites collides, false otherwise.
+     */
+    hitBox(...spriteObjects){
 
-        if(strategy == CollisionStrategies.BOX){
+        let hit = false;
 
-            spriteObject.forEach(sprite => {
-     
-                
-            });
-        }
-        
-        if(strategy == CollisionStrategies.CIRCLE){
+        let dx = spriteObjects[0].centerX - spriteObjects[1].centerX;
+        let dy = spriteObjects[0].centerY - spriteObjects[1].centerY;
+
+        let combinedHalfWidths = spriteObjects[0].halfWidth + spriteObjects[1].halfWidth;
+        let combinedHalfHeights = spriteObjects[0].halfHeight + spriteObjects[1].halfHeight;
+
+        if(Math.abs(dx) < combinedHalfWidths){
+
+            if(Math.abs(dy) < combinedHalfHeights){
+
+                hit = true;
             
-            spriteObject.forEach(sprite => {
+            }else{
+                
+                hit = false;
+            }
 
-                        
-            });
+        }else{
+                
+            hit = false;
         }
 
-        return this;
+        return hit;
     }
 
-    hitBox(){
+    hitCircle(spriteObjects){
 
-        
     }
+
+    get CS(){ return CollisionStrategies; }
 }
 
-export default Collision;
+export default new Collision();
