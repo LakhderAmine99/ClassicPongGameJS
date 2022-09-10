@@ -18,9 +18,7 @@ class Circle extends Shape {
      * @param {CanvasRenderingContext2D} context 
      * @public
      */
-    draw(context){
-
-    }
+    draw(context){}
 }
 
 export default Circle;
