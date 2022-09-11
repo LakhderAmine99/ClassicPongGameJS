@@ -225,28 +225,20 @@ class Pong {
 
         this.#keyboard.handle('keydown',(e) => {
 
-            if(e.keyCode == keyCodes.UP){
-
+            if(e.keyCode == keyCodes.UP)
                 Utils.Directions.MOVE_UP = true;
-            }
 
-            if(e.keyCode == keyCodes.DOWN){
-
+            if(e.keyCode == keyCodes.DOWN)
                 Utils.Directions.MOVE_DOWN = true;
-            }
         });
 
         this.#keyboard.handle('keyup',(e) => {
 
-            if(e.keyCode == keyCodes.UP){
-
+            if(e.keyCode == keyCodes.UP)
                 Utils.Directions.MOVE_UP = false;
-            }
 
-            if(e.keyCode == keyCodes.DOWN){
-
+            if(e.keyCode == keyCodes.DOWN)
                 Utils.Directions.MOVE_DOWN = false;
-            }
         });
     }
 
@@ -286,11 +278,7 @@ class Pong {
     #render(){
 
         this.#drawingContext.clearRect(0,0,this.#canvas.width,this.#canvas.height);
-
-        this.#sprites.forEach(sprite => {
-
-            sprite.draw(this.#drawingContext);
-        });
+        this.#sprites.forEach(sprite => sprite.draw(this.#drawingContext) );
     }
 }
 

@@ -38,10 +38,8 @@ class Rectangle extends Shape {
      */
     setVerticalBoundaries(y,h){
 
-        if(this.y <= y || this.bottom >= h){
-
+        if(this.y <= y || this.bottom >= h)
             this.speedY *= -1;
-        }
     }
 
     /**

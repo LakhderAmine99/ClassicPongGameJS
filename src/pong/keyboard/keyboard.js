@@ -11,10 +11,7 @@ export function Keyboard(){
      * @param {()} handler 
      * @public
      */
-    this.handle = (eventType,handler) => {
-
-        window.addEventListener(eventType,handler);
-    }
+    this.handle = (eventType,handler) => window.addEventListener(eventType,handler);
 
     /**
      * 
@@ -22,9 +19,6 @@ export function Keyboard(){
      * @param {()} handler 
      * @public
      */
-    this.remove = (eventType,handler) => {
-
-        window.removeEventListener(eventType,handler);
-    }
+    this.remove = (eventType,handler) => window.removeEventListener(eventType,handler);
 };
 
