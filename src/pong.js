@@ -42,6 +42,10 @@ class Pong {
 
     frameDuration = 1000/60;
 
+    animationFrameId = null;
+
+    GAME_STATE = 1;
+
     /**
      * 
      * @param {HTMLCanvasElement} canvas 
@@ -68,10 +72,10 @@ class Pong {
         this.#sprites.push(new Rectangle(
 
             20,
-            ((this.#canvas.height/2) - 100/2) | 0,
+            ((this.#canvas.height/2) - 80/2) | 0,
             {
-                width: 15,
-                height: 100,
+                width: 10,
+                height: 80,
                 speedX: 6,
                 speedY: 6,
                 color: 'white'
@@ -81,10 +85,10 @@ class Pong {
         this.#sprites.push(new Rectangle(
 
             this.#canvas.width - 20 - 20,
-            ((this.#canvas.height/2) - 100/2) | 0,
+            ((this.#canvas.height/2) - 80/2) | 0,
             {
-                width: 15,
-                height: 100,
+                width: 10,
+                height: 80,
                 speedX: 8,
                 speedY: 8,
                 color: 'white'
@@ -100,7 +104,7 @@ class Pong {
                 height: 20,
                 speedX: 6,
                 speedY: 6,
-                color: 'red'
+                color: 'white'
             }
         ));
 
@@ -125,17 +129,93 @@ class Pong {
         }
     }
 
+    /**
+     * 
+     */
     start(){
 
         this.#update();
     }
 
+    /**
+     * 
+     */
     pause(){
 
+        window.cancelAnimationFrame(() => this.animationFrameId);
+
+        // show the pause menu
     }
 
+    /**
+     * 
+     */
     end(){
 
+        this.pause();
+
+        // end the game process
+    }
+
+    /**
+     * 
+     */
+    play(){
+
+        if(Utils.Directions.MOVE_UP && !Utils.Directions.MOVE_DOWN){
+        
+            this.#sprites[0].y = Math.max(20,this.#sprites[0].y - this.#sprites[0].speedY);
+        }
+            
+        if(Utils.Directions.MOVE_DOWN && !Utils.Directions.MOVE_UP){
+    
+            this.#sprites[0].y = Math.min(this.#sprites[0].y + this.#sprites[0].speedY,this.#canvas.height - this.#sprites[0].height - 20);
+        }
+
+        this.#sprites[2].x += this.#sprites[2].speedX;
+        this.#sprites[2].y += this.#sprites[2].speedY;
+
+        if(this.#sprites[2].speedY < 0){
+
+            this.#sprites[1].y = Math.max(0,((this.#sprites[2].y + this.#sprites[2].height/2 + this.#sprites[1].height/2)*0.75 + Math.random()) | 0);
+
+        }else{
+
+            this.#sprites[1].y = Math.min(((this.#sprites[2].y + this.#sprites[1].height/2)*0.75 + Math.random()) | 0,this.#canvas.height - this.#sprites[0].height);
+        }
+        
+        this.#sprites[2].setVerticalBoundaries(0,this.#canvas.height);
+
+        if(this.#sprites[2].x <= 0){
+
+            this.opponentScore += 1;
+            this.opponentScoreElement.innerHTML = this.opponentScore;
+            this.#sprites[2].x = this.#canvas.width/2 | 0;
+        }
+        
+        if(this.#sprites[2].x > this.#canvas.width){
+            
+            this.playerScore += 1;
+            this.playerScoreElement.innerHTML = this.playerScore;
+            this.#sprites[2].x = this.#canvas.width/2 | 0;
+        }
+        
+        if(Collision.hitBox(this.#sprites[0],this.#sprites[2])){
+
+            this.#sprites[2].speedX = 4+Math.random()*8 | 0;
+            this.#sprites[2].speedY = 1+Math.random()*6 | 0;
+        }
+
+        if(Collision.hitBox(this.#sprites[1],this.#sprites[2])){
+
+            this.#sprites[2].speedX = -(4+Math.random()*8 | 0);
+            this.#sprites[2].speedY = -(1+Math.random()*6 | 0);
+        }
+
+        if(this.playerScore >= 10 || this.opponentScore >= 10){
+
+            this.GAME_STATE = 3;
+        }
     }
 
     /**
@@ -175,69 +255,24 @@ class Pong {
      */
     #update(){
 
-        window.requestAnimationFrame(() => this.#update());
+        this.animationFrameId = window.requestAnimationFrame(() => this.#update());
 
         this.elapsedTime += performance.now() - this.previewsLoop;
         this.previewsLoop = performance.now();
 
         if(this.elapsedTime >= this.frameDuration){
 
-            if(Utils.Directions.MOVE_UP && !Utils.Directions.MOVE_DOWN){
+            if(this.GAME_STATE == 1){
+
+                this.play();
+    
+            }else if(this.GAME_STATE == 2){
         
-                this.#sprites[0].y = Math.max(20,this.#sprites[0].y - this.#sprites[0].speedY);
-            }
-                
-            if(Utils.Directions.MOVE_DOWN && !Utils.Directions.MOVE_UP){
+                this.pause();
+    
+            }else if(this.GAME_STATE == 3){
         
-                this.#sprites[0].y = Math.min(this.#sprites[0].y + this.#sprites[0].speedY,this.#canvas.height - this.#sprites[0].height - 20);
-            }
-
-            this.#sprites[2].x += this.#sprites[2].speedX;
-            this.#sprites[2].y += this.#sprites[2].speedY;
-
-            if(this.#sprites[2].speedY < 0){
-
-                this.#sprites[1].y = Math.max(0,((this.#sprites[2].y + this.#sprites[2].height/2 + this.#sprites[1].height/2)*0.75 + Math.random()) | 0);
-
-            }else{
-
-                this.#sprites[1].y = Math.min(((this.#sprites[2].y + this.#sprites[1].height/2)*0.75 + Math.random()) | 0,this.#canvas.height - this.#sprites[0].height);
-            }
-            
-            if(this.#sprites[2].bottom >= this.#canvas.height){
-
-                this.#sprites[2].speedY = -6;
-            }
-
-            if(this.#sprites[2].y <= 0){
-
-                this.#sprites[2].speedY = 6;
-            }
-
-            if(this.#sprites[2].x <= 0){
-
-                this.opponentScore += 1;
-                this.opponentScoreElement.innerHTML = this.opponentScore;
-                this.#sprites[2].x = this.#canvas.width/2 | 0;
-            }
-            
-            if(this.#sprites[2].x > this.#canvas.width){
-                
-                this.playerScore += 1;
-                this.playerScoreElement.innerHTML = this.playerScore;
-                this.#sprites[2].x = this.#canvas.width/2 | 0;
-            }
-
-            if(Collision.hitBox(this.#sprites[0],this.#sprites[2])){
-
-                this.#sprites[2].speedX = 4+Math.random()*8 | 0;
-                this.#sprites[2].speedY = 1+Math.random()*6 | 0;
-            }
-
-            if(Collision.hitBox(this.#sprites[1],this.#sprites[2])){
-
-                this.#sprites[2].speedX = -(4+Math.random()*8 | 0);
-                this.#sprites[2].speedY = -(1+Math.random()*6 | 0);
+                this.end();
             }
 
             this.elapsedTime -= this.frameDuration;

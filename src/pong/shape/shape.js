@@ -57,6 +57,9 @@ class Shape {
      */
     set speedX(value){ this.#options.speedX = value; }
 
+    /**
+     * @param {number} value
+     */
     set speedY(value){ this.#options.speedY = value; }
 
     /**

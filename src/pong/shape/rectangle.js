@@ -30,6 +30,21 @@ class Rectangle extends Shape {
     }
 
     /**
+     * 
+     * @param {number} x 
+     * @param {number} y 
+     * @param {number} w 
+     * @param {number} h 
+     */
+    setVerticalBoundaries(y,h){
+
+        if(this.y <= y || this.bottom >= h){
+
+            this.speedY *= -1;
+        }
+    }
+
+    /**
      * @returns {number}
      */
     get centerX(){ return this.x + (this.options.width/2); }
