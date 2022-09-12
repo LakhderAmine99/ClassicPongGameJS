@@ -30,16 +30,11 @@ class Pong {
      */
     #drawingContext = null;
 
-    scorePanel = document.querySelector('.score-panel');
-
-    playerScore = 0;
-    opponentScore = 0;
-    playerScoreElement = document.querySelector('.player');
-    opponentScoreElement = document.querySelector('.opponent');
+    playerScore = document.querySelector('.player');
+    opponentScore = document.querySelector('.opponent');
 
     elapsedTime = performance.now();
     previewsLoop = performance.now();
-
     frameDuration = 1000/60;
 
     animationFrameId = null;
@@ -177,42 +172,40 @@ class Pong {
 
         if(this.#sprites[2].speedY < 0){
 
-            this.#sprites[1].y = Math.max(0,((this.#sprites[2].y + this.#sprites[2].height/2 + this.#sprites[1].height/2)*0.75 + Math.random()) | 0);
+            this.#sprites[1].y = Math.max(0,((this.#sprites[2].centerY + this.#sprites[1].halfHeight)*0.75 + Math.random()) | 0);
 
         }else{
 
-            this.#sprites[1].y = Math.min(((this.#sprites[2].y + this.#sprites[1].height/2)*0.75 + Math.random()) | 0,this.#canvas.height - this.#sprites[0].height);
+            this.#sprites[1].y = Math.min(((this.#sprites[2].y + this.#sprites[1].halfHeight)*0.75 + Math.random()) | 0,this.#canvas.height - this.#sprites[0].height);
         }
         
         this.#sprites[2].setVerticalBoundaries(0,this.#canvas.height);
 
         if(this.#sprites[2].x <= 0){
 
-            this.opponentScore += 1;
-            this.opponentScoreElement.innerHTML = this.opponentScore;
+            this.opponentScore.innerHTML = parseInt(this.opponentScore.innerHTML)+1;
             this.#sprites[2].x = this.#canvas.width/2 | 0;
         }
         
         if(this.#sprites[2].x > this.#canvas.width){
             
-            this.playerScore += 1;
-            this.playerScoreElement.innerHTML = this.playerScore;
+            this.playerScore.innerHTML = parseInt(this.playerScore.innerHTML)+1;
             this.#sprites[2].x = this.#canvas.width/2 | 0;
         }
         
         if(Collision.hitBox(this.#sprites[0],this.#sprites[2])){
 
-            this.#sprites[2].speedX = 4+Math.random()*8 | 0;
+            this.#sprites[2].speedX *= -1;
             this.#sprites[2].speedY = 1+Math.random()*6 | 0;
         }
 
         if(Collision.hitBox(this.#sprites[1],this.#sprites[2])){
 
-            this.#sprites[2].speedX = -(4+Math.random()*8 | 0);
+            this.#sprites[2].speedX *= -1;
             this.#sprites[2].speedY = -(1+Math.random()*6 | 0);
         }
 
-        if(this.playerScore >= 10 || this.opponentScore >= 10){
+        if(parseInt(this.playerScore.innerHTM) >= 10 || parseInt(this.opponentScore.innerHTM) >= 10){
 
             this.GAME_STATE = 3;
         }
