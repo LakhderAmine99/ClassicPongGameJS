@@ -72,18 +72,7 @@ class Shape {
     get speedX(){ return this.#options.speedX; }
     get speedY(){ return this.#options.speedY; }
     get color(){ return this.#options.color; }
-    
     get options(){ return this.#options; }
-
-    /**
-     * @returns {number}
-     */
-    get centerX(){}
-
-    /**
-     * @returns {number}
-     */
-    get centerY(){}
 }
 
 export default Shape;

@@ -21,11 +21,8 @@ class Rectangle extends Shape {
     draw(context){
 
         context.beginPath();
-
         context.fillStyle = this.options.color;
-
         context.rect(this.x,this.y,this.options.width,this.options.height);
-
         context.fill();
     }
 

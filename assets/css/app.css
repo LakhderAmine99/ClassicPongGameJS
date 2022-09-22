@@ -12,6 +12,10 @@ html,body{
 #app{
 
     height: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
 
 .flex{
@@ -26,7 +30,7 @@ html,body{
 .wrapper{
 
     position: relative;
-    height: inherit;
+    background-color: black;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -44,8 +48,8 @@ canvas{
     background-color: transparent;
     font-size: 100px;
     color: rgba(255, 255, 255, 0.43);
-    width: 25%;
-    top: 15%;
+    width: 30%;
+    top: 5%;
 }
 
 .score{

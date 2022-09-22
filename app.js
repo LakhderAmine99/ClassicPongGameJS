@@ -12,13 +12,11 @@ function Application(){
     function init(){
 
         const canvas = document.getElementById('application');
-
         const options = {};
 
         const pong = new Pong(canvas,options);
 
-        pong.start();
-
+        window.onclick = () => pong.start();
         window.ondblclick = () => pong.setScreenSize('FULL');
     }
 }
